@@ -1,0 +1,23 @@
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "mr-daneshvaar",
+    "main": "worker.js",
+    "compatibility_date": "2026-07-29",
+  
+    "assets": {
+      "directory": ".",
+      "binding": "ASSETS"
+    },
+  
+    "d1_databases": [
+      {
+        "binding": "DB",
+        "database_name": "mr-daneshvaar-projects",
+        "database_id": "e8aba867-1e6e-4ff4-a5c8-2378076145e1"
+      }
+    ],
+  
+    "observability": {
+      "enabled": true
+    }
+  }
