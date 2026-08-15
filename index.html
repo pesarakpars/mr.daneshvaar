@@ -707,7 +707,115 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     </footer>
     
     
-    
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const form = document.getElementById("projectForm");
+    const button = document.getElementById("submitProjectBtn");
+    const message = document.getElementById("formMessage");
+
+    if (!form) {
+        console.error("Project form not found.");
+        return;
+    }
+
+    form.addEventListener("submit", async function (event) {
+
+        event.preventDefault();
+
+        button.disabled = true;
+        button.textContent = "در حال ارسال...";
+
+        message.style.display = "none";
+        message.textContent = "";
+
+        const data = {
+
+            full_name:
+                document.getElementById("full_name").value.trim(),
+
+            phone:
+                document.getElementById("phone").value.trim(),
+
+            brand:
+                document.getElementById("brand").value.trim(),
+
+            project_type:
+                document.getElementById("project_type").value,
+
+            description:
+                document.getElementById("description").value.trim(),
+
+            budget:
+                document.getElementById("budget").value,
+
+            start_time:
+                document.getElementById("start_time").value.trim(),
+
+            instagram:
+                document.getElementById("instagram").value.trim(),
+
+            website:
+                document.getElementById("website").value.trim()
+
+        };
+
+        try {
+
+            const response = await fetch("/api/projects", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(data)
+
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+
+                message.textContent =
+                    "درخواست شما با موفقیت ثبت شد. به‌زودی با شما تماس می‌گیریم.";
+
+                message.style.display = "block";
+
+                form.reset();
+
+                button.textContent = "درخواست ثبت شد";
+
+            } else {
+
+                throw new Error(
+                    result.message ||
+                    "ثبت درخواست انجام نشد."
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error("FORM ERROR:", error);
+
+            message.textContent =
+                "خطایی در ارسال درخواست رخ داد. لطفاً دوباره تلاش کنید.";
+
+            message.style.display = "block";
+
+            button.disabled = false;
+            button.textContent = "ارسال درخواست";
+
+        }
+
+    });
+
+});
+
+</script>    
     <script src="assets/js/main.js"></script>
     
     
