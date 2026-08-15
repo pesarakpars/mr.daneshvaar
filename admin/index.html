@@ -1,0 +1,212 @@
+﻿<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>پنل مدیریت | MR.DANESHVAAR</title>
+
+  <link rel="stylesheet" href="./admin.css">
+</head>
+
+<body>
+
+  <div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+      <div class="brand">
+        <div class="brand-logo">MR</div>
+
+        <div>
+          <strong>MR.DANESHVAAR</strong>
+          <span>مدیریت پروژه‌ها</span>
+        </div>
+      </div>
+
+      <nav class="menu">
+
+        <button class="menu-item active" data-filter="all">
+          <span>📊</span>
+          <span>همه درخواست‌ها</span>
+          <b id="allCount">0</b>
+        </button>
+
+        <button class="menu-item" data-filter="new">
+          <span>🆕</span>
+          <span>جدید</span>
+          <b id="newCount">0</b>
+        </button>
+
+        <button class="menu-item" data-filter="reviewing">
+          <span>👁️</span>
+          <span>در حال بررسی</span>
+          <b id="reviewingCount">0</b>
+        </button>
+
+        <button class="menu-item" data-filter="completed">
+          <span>✅</span>
+          <span>تکمیل شده</span>
+          <b id="completedCount">0</b>
+        </button>
+
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="/" target="_blank">
+          مشاهده سایت
+        </a>
+      </div>
+
+    </aside>
+
+
+    <!-- Main -->
+    <main class="main">
+
+      <header class="topbar">
+
+        <div>
+          <h1>درخواست‌های پروژه</h1>
+          <p>مدیریت و پیگیری درخواست‌های مشتریان</p>
+        </div>
+
+        <button class="refresh-btn" id="refreshBtn">
+          ↻ بروزرسانی
+        </button>
+
+      </header>
+
+
+      <!-- Statistics -->
+
+      <section class="stats">
+
+        <div class="stat-card">
+          <div class="stat-icon">📋</div>
+
+          <div>
+            <span>کل درخواست‌ها</span>
+            <strong id="totalStat">0</strong>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">🆕</div>
+
+          <div>
+            <span>درخواست جدید</span>
+            <strong id="newStat">0</strong>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">👁️</div>
+
+          <div>
+            <span>در حال بررسی</span>
+            <strong id="reviewingStat">0</strong>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">✅</div>
+
+          <div>
+            <span>تکمیل شده</span>
+            <strong id="completedStat">0</strong>
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- Toolbar -->
+
+      <section class="toolbar">
+
+        <div class="search-box">
+
+          <span>⌕</span>
+
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="جستجو بر اساس نام، شماره، برند..."
+          >
+
+        </div>
+
+        <select id="statusFilter">
+
+          <option value="all">همه وضعیت‌ها</option>
+          <option value="new">جدید</option>
+          <option value="reviewing">در حال بررسی</option>
+          <option value="completed">تکمیل شده</option>
+
+        </select>
+
+      </section>
+
+
+      <!-- Projects -->
+
+      <section class="projects-section">
+
+        <div id="loading" class="loading">
+          <div class="spinner"></div>
+          <p>در حال دریافت درخواست‌ها...</p>
+        </div>
+
+
+        <div id="emptyState" class="empty-state hidden">
+
+          <div class="empty-icon">📭</div>
+
+          <h3>درخواستی وجود ندارد</h3>
+
+          <p>
+            هنوز هیچ درخواست پروژه‌ای ثبت نشده است.
+          </p>
+
+        </div>
+
+
+        <div id="projectsList" class="projects-list"></div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+
+  <!-- Project Modal -->
+
+  <div id="projectModal" class="modal hidden">
+
+    <div class="modal-overlay"></div>
+
+    <div class="modal-box">
+
+      <button class="modal-close" id="modalClose">
+        ×
+      </button>
+
+      <div id="modalContent"></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- Toast -->
+
+  <div id="toast" class="toast"></div>
+
+
+  <script src="./admin.js"></script>
+
+</body>
+</html>
