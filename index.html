@@ -160,45 +160,141 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
                 <h2>شروع همکاری</h2>
             </div>
     
-            <form class="order-form">
-    
-                <div class="input-group">
-                    <input type="text" placeholder="نام و نام خانوادگی" required>
-                </div>
-    
-                <div class="input-group">
-                    <input type="tel" placeholder="شماره تماس" required>
-                </div>
-    
-                <div class="input-group">
-                    <select required>
-                        <option selected disabled>نوع خدمات</option>
-                        <option>فیلمبرداری</option>
-                        <option>تدوین</option>
-                        <option>تولید محتوا</option>
-                        <option>مدیریت اینستاگرام</option>
-                    </select>
-                </div>
-    
-                <div class="input-group">
-                    <select required>
-                        <option selected disabled>بودجه پروژه</option>
-                        <option>کمتر از ۱۰ میلیون</option>
-                        <option>۱۰ تا ۳۰ میلیون</option>
-                        <option>۳۰ تا ۷۰ میلیون</option>
-                        <option>بیشتر از ۷۰ میلیون</option>
-                    </select>
-                </div>
-    
-                <div class="input-group">
-                    <textarea placeholder="درباره پروژه بنویسید..." rows="6"></textarea>
-                </div>
-    
-                <button class="btn-primary">
-                    ارسال درخواست
-                </button>
-    
-            </form>
+<form class="order-form" id="projectForm">
+
+    <div class="input-group">
+        <input
+            type="text"
+            id="full_name"
+            name="full_name"
+            placeholder="نام و نام خانوادگی"
+            required>
+    </div>
+
+    <div class="input-group">
+        <input
+            type="tel"
+            id="phone"
+            name="phone"
+            placeholder="شماره تماس"
+            required>
+    </div>
+
+    <div class="input-group">
+        <input
+            type="text"
+            id="brand"
+            name="brand"
+            placeholder="نام برند / کسب‌وکار">
+    </div>
+
+    <div class="input-group">
+        <select
+            id="project_type"
+            name="project_type"
+            required>
+
+            <option value="" selected disabled>
+                نوع خدمات
+            </option>
+
+            <option value="فیلمبرداری">
+                فیلمبرداری
+            </option>
+
+            <option value="تدوین">
+                تدوین
+            </option>
+
+            <option value="تولید محتوا">
+                تولید محتوا
+            </option>
+
+            <option value="مدیریت اینستاگرام">
+                مدیریت اینستاگرام
+            </option>
+
+        </select>
+    </div>
+
+    <div class="input-group">
+        <select
+            id="budget"
+            name="budget"
+            required>
+
+            <option value="" selected disabled>
+                بودجه پروژه
+            </option>
+
+            <option value="کمتر از ۱۰ میلیون">
+                کمتر از ۱۰ میلیون
+            </option>
+
+            <option value="۱۰ تا ۳۰ میلیون">
+                ۱۰ تا ۳۰ میلیون
+            </option>
+
+            <option value="۳۰ تا ۷۰ میلیون">
+                ۳۰ تا ۷۰ میلیون
+            </option>
+
+            <option value="بیشتر از ۷۰ میلیون">
+                بیشتر از ۷۰ میلیون
+            </option>
+
+        </select>
+    </div>
+
+    <div class="input-group">
+        <input
+            type="text"
+            id="start_time"
+            name="start_time"
+            placeholder="زمان تقریبی شروع پروژه">
+    </div>
+
+    <div class="input-group">
+        <input
+            type="text"
+            id="instagram"
+            name="instagram"
+            placeholder="آیدی اینستاگرام">
+    </div>
+
+    <div class="input-group">
+        <input
+            type="text"
+            id="website"
+            name="website"
+            placeholder="آدرس سایت">
+    </div>
+
+    <div class="input-group">
+        <textarea
+            id="description"
+            name="description"
+            placeholder="درباره پروژه بنویسید..."
+            rows="6"
+            required></textarea>
+    </div>
+
+    <button
+        type="submit"
+        class="btn-primary"
+        id="submitProjectBtn">
+
+        ارسال درخواست
+
+    </button>
+
+    <div
+        id="formMessage"
+        class="form-message"
+        style="display:none;">
+    </div>
+
+</form>
     
         </div>
     
