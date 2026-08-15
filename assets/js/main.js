@@ -678,19 +678,17 @@ if (projectForm) {
     // GET SELECTED PROJECT TYPES
     // --------------------------------------------------
 
-    function getProjectTypes() {
+function getProjectTypes() {
 
-        const checked =
-            projectForm.querySelectorAll(
-                'input[name="projectType"]:checked'
-            );
+    const checked =
+        projectForm.querySelectorAll(
+            'input[name="projectType"]:checked'
+        );
 
+    return Array.from(checked)
+        .map(item => item.value);
 
-        return Array.from(checked)
-            .map(item => item.value);
-
-    }
-
+}
 
     // --------------------------------------------------
     // VALIDATE FORM
