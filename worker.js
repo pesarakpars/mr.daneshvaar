@@ -3,6 +3,52 @@ export default {
 
     const url = new URL(request.url);
 
+    // ==========================================
+    // ADMIN AUTHENTICATION
+    // ==========================================
+
+    const isAdminPage =
+      url.pathname === "/admin" ||
+      url.pathname.startsWith("/admin/");
+
+    const isAdminApi =
+      (
+        url.pathname === "/api/projects" &&
+        (
+          request.method === "GET" ||
+          request.method === "DELETE"
+        )
+      ) ||
+      (
+        url.pathname === "/api/projects/status" &&
+        request.method === "POST"
+      );
+
+
+    if (isAdminPage || isAdminApi) {
+
+      const authResult =
+        await authenticateAdmin(request, env);
+
+      if (!authResult.authorized) {
+
+        return new Response(
+          "Authentication required.",
+          {
+            status: 401,
+            headers: {
+              "WWW-Authenticate":
+                'Basic realm="MR.DANESHVAAR Admin", charset="UTF-8"',
+              "Cache-Control":
+                "no-store"
+            }
+          }
+        );
+
+      }
+
+    }
+
 
     // ==========================================
     // CORS / OPTIONS
@@ -14,8 +60,10 @@ export default {
         status: 204,
         headers: {
           "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Headers": "Content-Type",
-          "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS"
+          "Access-Control-Allow-Headers":
+            "Content-Type",
+          "Access-Control-Allow-Methods":
+            "GET, POST, DELETE, OPTIONS"
         }
       });
 
@@ -24,6 +72,7 @@ export default {
 
     // ==========================================
     // API: ثبت درخواست پروژه
+    // PUBLIC
     // ==========================================
 
     if (
@@ -34,7 +83,6 @@ export default {
       try {
 
         const data = await request.json();
-
 
         const {
           full_name,
@@ -49,8 +97,6 @@ export default {
         } = data;
 
 
-        // اعتبارسنجی اطلاعات ضروری
-
         if (
           !full_name ||
           !phone ||
@@ -60,15 +106,14 @@ export default {
           return jsonResponse(
             {
               success: false,
-              message: "اطلاعات ضروری کامل نیست."
+              message:
+                "اطلاعات ضروری کامل نیست."
             },
             400
           );
 
         }
 
-
-        // ذخیره در D1
 
         const result = await env.DB
           .prepare(`
@@ -102,8 +147,10 @@ export default {
 
         return jsonResponse({
           success: true,
-          message: "درخواست پروژه با موفقیت ثبت شد.",
-          id: result.meta?.last_row_id || null
+          message:
+            "درخواست پروژه با موفقیت ثبت شد.",
+          id:
+            result.meta?.last_row_id || null
         });
 
 
@@ -114,11 +161,11 @@ export default {
           error
         );
 
-
         return jsonResponse(
           {
             success: false,
-            message: "ثبت درخواست انجام نشد."
+            message:
+              "ثبت درخواست انجام نشد."
           },
           500
         );
@@ -130,6 +177,7 @@ export default {
 
     // ==========================================
     // API: دریافت درخواست‌ها
+    // PROTECTED
     // ==========================================
 
     if (
@@ -162,7 +210,8 @@ export default {
 
         return jsonResponse({
           success: true,
-          projects: result.results || []
+          projects:
+            result.results || []
         });
 
 
@@ -173,11 +222,11 @@ export default {
           error
         );
 
-
         return jsonResponse(
           {
             success: false,
-            message: "دریافت درخواست‌ها انجام نشد."
+            message:
+              "دریافت درخواست‌ها انجام نشد."
           },
           500
         );
@@ -189,6 +238,7 @@ export default {
 
     // ==========================================
     // API: تغییر وضعیت پروژه
+    // PROTECTED
     // ==========================================
 
     if (
@@ -199,7 +249,6 @@ export default {
       try {
 
         const data = await request.json();
-
 
         const {
           id,
@@ -222,7 +271,8 @@ export default {
           return jsonResponse(
             {
               success: false,
-              message: "اطلاعات وضعیت نامعتبر است."
+              message:
+                "اطلاعات وضعیت نامعتبر است."
             },
             400
           );
@@ -245,7 +295,8 @@ export default {
 
         return jsonResponse({
           success: true,
-          message: "وضعیت درخواست تغییر کرد."
+          message:
+            "وضعیت درخواست تغییر کرد."
         });
 
 
@@ -256,11 +307,11 @@ export default {
           error
         );
 
-
         return jsonResponse(
           {
             success: false,
-            message: "تغییر وضعیت انجام نشد."
+            message:
+              "تغییر وضعیت انجام نشد."
           },
           500
         );
@@ -272,6 +323,7 @@ export default {
 
     // ==========================================
     // API: حذف درخواست پروژه
+    // PROTECTED
     // ==========================================
 
     if (
@@ -281,7 +333,8 @@ export default {
 
       try {
 
-        const id = url.searchParams.get("id");
+        const id =
+          url.searchParams.get("id");
 
 
         if (!id) {
@@ -289,7 +342,8 @@ export default {
           return jsonResponse(
             {
               success: false,
-              message: "شناسه درخواست مشخص نشده است."
+              message:
+                "شناسه درخواست مشخص نشده است."
             },
             400
           );
@@ -314,7 +368,8 @@ export default {
           return jsonResponse(
             {
               success: false,
-              message: "درخواست موردنظر پیدا نشد."
+              message:
+                "درخواست موردنظر پیدا نشد."
             },
             404
           );
@@ -324,7 +379,8 @@ export default {
 
         return jsonResponse({
           success: true,
-          message: "درخواست با موفقیت حذف شد."
+          message:
+            "درخواست با موفقیت حذف شد."
         });
 
 
@@ -335,11 +391,11 @@ export default {
           error
         );
 
-
         return jsonResponse(
           {
             success: false,
-            message: "حذف درخواست انجام نشد."
+            message:
+              "حذف درخواست انجام نشد."
           },
           500
         );
@@ -360,6 +416,175 @@ export default {
 
 
 // ==========================================
+// ADMIN AUTHENTICATION
+// ==========================================
+
+async function authenticateAdmin(
+  request,
+  env
+) {
+
+  const authorization =
+    request.headers.get("Authorization");
+
+
+  if (!authorization) {
+
+    return {
+      authorized: false
+    };
+
+  }
+
+
+  if (
+    !authorization.startsWith("Basic ")
+  ) {
+
+    return {
+      authorized: false
+    };
+
+  }
+
+
+  try {
+
+    const encoded =
+      authorization.slice(6).trim();
+
+
+    const decoded =
+      atob(encoded);
+
+
+    const separator =
+      decoded.indexOf(":");
+
+
+    if (separator === -1) {
+
+      return {
+        authorized: false
+      };
+
+    }
+
+
+    const username =
+      decoded.slice(0, separator);
+
+    const password =
+      decoded.slice(separator + 1);
+
+
+    const expectedUsername =
+      env.ADMIN_USERNAME;
+
+    const expectedPassword =
+      env.ADMIN_PASSWORD;
+
+
+    if (
+      !expectedUsername ||
+      !expectedPassword
+    ) {
+
+      console.error(
+        "ADMIN_AUTH_ERROR: Missing ADMIN_USERNAME or ADMIN_PASSWORD secret."
+      );
+
+      return {
+        authorized: false
+      };
+
+    }
+
+
+    const usernameMatch =
+      timingSafeEqual(
+        username,
+        expectedUsername
+      );
+
+    const passwordMatch =
+      timingSafeEqual(
+        password,
+        expectedPassword
+      );
+
+
+    return {
+      authorized:
+        usernameMatch &&
+        passwordMatch
+    };
+
+
+  } catch (error) {
+
+    console.error(
+      "ADMIN_AUTH_ERROR:",
+      error
+    );
+
+    return {
+      authorized: false
+    };
+
+  }
+
+}
+
+
+// ==========================================
+// CONSTANT-TIME STRING COMPARISON
+// ==========================================
+
+function timingSafeEqual(
+  a,
+  b
+) {
+
+  if (
+    typeof a !== "string" ||
+    typeof b !== "string"
+  ) {
+
+    return false;
+
+  }
+
+
+  if (a.length !== b.length) {
+
+    return false;
+
+  }
+
+
+  let result = 0;
+
+
+  for (
+    let i = 0;
+    i < a.length;
+    i++
+  ) {
+
+    result |=
+      a.charCodeAt(i) ^
+      b.charCodeAt(i);
+
+  }
+
+
+  return result === 0;
+
+}
+
+
+// ==========================================
 // JSON RESPONSE
 // ==========================================
 
@@ -377,13 +602,17 @@ function jsonResponse(
         "Content-Type":
           "application/json; charset=UTF-8",
 
-        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Origin":
+          "*",
 
         "Access-Control-Allow-Headers":
           "Content-Type",
 
         "Access-Control-Allow-Methods":
-          "GET, POST, DELETE, OPTIONS"
+          "GET, POST, DELETE, OPTIONS",
+
+        "Cache-Control":
+          "no-store"
       }
     }
   );
