@@ -744,8 +744,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 document.addEventListener("DOMContentLoaded", function () {
 
     const form = document.getElementById("projectForm");
-    const button = document.getElementById("submitProjectBtn");
-    const message = document.getElementById("formMessage");
+    const button = document.getElementById("submitProject");
+    const message = document.getElementById("projectSuccess");
 
     if (!form) {
         console.error("Project form not found.");
@@ -761,11 +761,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         message.style.display = "none";
         message.textContent = "";
+        message.setAttribute("aria-hidden", "true");
 
         const data = {
 
             full_name:
-                document.getElementById("full_name").value.trim(),
+                document.getElementById("fullName").value.trim(),
 
             phone:
                 document.getElementById("phone").value.trim(),
@@ -774,7 +775,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("brand").value.trim(),
 
             project_type:
-                document.getElementById("project_type").value,
+                document.getElementById("projectType").value,
 
             description:
                 document.getElementById("description").value.trim(),
@@ -783,7 +784,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("budget").value,
 
             start_time:
-                document.getElementById("start_time").value.trim(),
+                document.getElementById("startTime").value.trim(),
 
             instagram:
                 document.getElementById("instagram").value.trim(),
@@ -815,6 +816,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     "درخواست شما با موفقیت ثبت شد. به‌زودی با شما تماس می‌گیریم.";
 
                 message.style.display = "block";
+                message.setAttribute("aria-hidden", "false");
 
                 form.reset();
 
@@ -823,8 +825,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
 
                 throw new Error(
-                    result.message ||
-                    "ثبت درخواست انجام نشد."
+                    result.message || "ثبت درخواست انجام نشد."
                 );
 
             }
@@ -837,6 +838,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 "خطایی در ارسال درخواست رخ داد. لطفاً دوباره تلاش کنید.";
 
             message.style.display = "block";
+            message.setAttribute("aria-hidden", "false");
 
             button.disabled = false;
             button.textContent = "ارسال درخواست";
@@ -847,7 +849,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-</script>    
+</script>
+
     <script src="assets/js/main.js"></script>
     
     
