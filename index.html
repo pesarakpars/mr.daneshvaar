@@ -151,29 +151,19 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     
     
     </section>
-<section id="order" class="order">
+    <section id="order" class="order">
 
     <div class="container">
 
         <div class="section-title">
-
             <p>START YOUR PROJECT</p>
-
             <h2>شروع همکاری</h2>
-
         </div>
 
-
-        <form
-            class="order-form"
-            id="projectForm"
-        >
-
+        <form class="order-form" id="projectForm">
 
             <!-- نام -->
-
             <div class="input-group">
-
                 <input
                     type="text"
                     id="fullName"
@@ -187,14 +177,10 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
                     id="fullNameError"
                     class="form-error"
                 ></small>
-
             </div>
 
-
             <!-- شماره تماس -->
-
             <div class="input-group">
-
                 <input
                     type="tel"
                     id="phone"
@@ -209,39 +195,26 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
                     id="phoneError"
                     class="form-error"
                 ></small>
-
             </div>
 
-
             <!-- برند -->
-
             <div class="input-group">
-
                 <input
                     type="text"
                     id="brand"
                     name="brand"
                     placeholder="نام برند / کسب‌وکار"
                 >
-
             </div>
 
-
             <!-- نوع خدمات -->
-
             <div class="input-group">
-
                 <select
                     id="projectType"
-                    name="projectType"
+                    name="project_type"
                     required
                 >
-
-                    <option
-                        value=""
-                        selected
-                        disabled
-                    >
+                    <option value="" selected disabled>
                         نوع خدمات
                     </option>
 
@@ -260,27 +233,17 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
                     <option value="مدیریت اینستاگرام">
                         مدیریت اینستاگرام
                     </option>
-
                 </select>
-
             </div>
 
-
             <!-- بودجه -->
-
             <div class="input-group">
-
                 <select
                     id="budget"
                     name="budget"
                     required
                 >
-
-                    <option
-                        value=""
-                        selected
-                        disabled
-                    >
+                    <option value="" selected disabled>
                         بودجه پروژه
                     </option>
 
@@ -299,58 +262,41 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
                     <option value="بیشتر از ۷۰ میلیون">
                         بیشتر از ۷۰ میلیون
                     </option>
-
                 </select>
-
             </div>
 
-
             <!-- زمان شروع -->
-
             <div class="input-group">
-
                 <input
                     type="text"
                     id="startTime"
                     name="start_time"
                     placeholder="زمان تقریبی شروع پروژه"
                 >
-
             </div>
 
-
             <!-- اینستاگرام -->
-
             <div class="input-group">
-
                 <input
                     type="text"
                     id="instagram"
                     name="instagram"
                     placeholder="آیدی اینستاگرام"
                 >
-
             </div>
 
-
             <!-- وبسایت -->
-
             <div class="input-group">
-
                 <input
                     type="text"
                     id="website"
                     name="website"
                     placeholder="آدرس سایت"
                 >
-
             </div>
 
-
             <!-- توضیحات -->
-
             <div class="input-group">
-
                 <textarea
                     id="description"
                     name="description"
@@ -363,122 +309,29 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
                     id="descriptionError"
                     class="form-error"
                 ></small>
-
             </div>
 
-
-            <!-- دکمه -->
-
+            <!-- دکمه ارسال -->
             <button
                 type="submit"
                 class="btn-primary"
                 id="submitProject"
             >
-
                 ارسال درخواست
-
             </button>
 
-
             <!-- پیام نتیجه -->
-
             <div
                 id="projectSuccess"
                 class="form-success"
                 aria-hidden="true"
             ></div>
 
-
         </form>
 
     </div>
 
 </section>
-    </div>
-
-    <div class="input-group">
-        <select
-            id="budget"
-            name="budget"
-            required>
-
-            <option value="" selected disabled>
-                بودجه پروژه
-            </option>
-
-            <option value="کمتر از ۱۰ میلیون">
-                کمتر از ۱۰ میلیون
-            </option>
-
-            <option value="۱۰ تا ۳۰ میلیون">
-                ۱۰ تا ۳۰ میلیون
-            </option>
-
-            <option value="۳۰ تا ۷۰ میلیون">
-                ۳۰ تا ۷۰ میلیون
-            </option>
-
-            <option value="بیشتر از ۷۰ میلیون">
-                بیشتر از ۷۰ میلیون
-            </option>
-
-        </select>
-    </div>
-
-    <div class="input-group">
-        <input
-            type="text"
-            id="start_time"
-            name="start_time"
-            placeholder="زمان تقریبی شروع پروژه">
-    </div>
-
-    <div class="input-group">
-        <input
-            type="text"
-            id="instagram"
-            name="instagram"
-            placeholder="آیدی اینستاگرام">
-    </div>
-
-    <div class="input-group">
-        <input
-            type="text"
-            id="website"
-            name="website"
-            placeholder="آدرس سایت">
-    </div>
-
-    <div class="input-group">
-        <textarea
-            id="description"
-            name="description"
-            placeholder="درباره پروژه بنویسید..."
-            rows="6"
-            required></textarea>
-    </div>
-
-    <button
-        type="submit"
-        class="btn-primary"
-        id="submitProjectBtn">
-
-        ارسال درخواست
-
-    </button>
-
-    <div
-        id="formMessage"
-        class="form-message"
-        style="display:none;">
-    </div>
-
-</form>
-    
-        </div>
-    
-    </section>
-    
     
     
     <!-- PORTFOLIO SECTION -->
