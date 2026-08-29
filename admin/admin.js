@@ -668,7 +668,7 @@ async function deleteProject() {
   }
 
 
- try {
+try {
 
   const auth = sessionStorage.getItem("adminAuth");
 
@@ -678,15 +678,24 @@ async function deleteProject() {
   }
 
   const response = await fetch(
-    `/api/projects?id=${encodeURIComponent(currentProject.id)}`,
+    "/api/projects/status",
     {
-      method: "DELETE",
+      method: "POST",
 
       headers: {
+        "Content-Type": "application/json",
         "Authorization": "Basic " + auth
-      }
+      },
+
+      body: JSON.stringify({
+        id: currentProject.id,
+        status
+      })
     }
   );
+
+
+  const data = await response.json();
 
     const data = await response.json();
 
