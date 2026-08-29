@@ -568,24 +568,34 @@ async function saveStatus() {
   const status = statusElement.value;
 
 
-  try {
+ try {
 
-    const response = await fetch(
-      "/api/projects/status",
-      {
-        method: "POST",
+  const auth = sessionStorage.getItem("adminAuth");
 
-        headers: {
-          "Content-Type": "application/json"
-        },
+  if (!auth) {
+    window.location.href = "/admin/login.html";
+    return;
+  }
 
-        body: JSON.stringify({
-          id: currentProject.id,
-          status
-        })
-      }
-    );
+  const response = await fetch(
+    "/api/projects/status",
+    {
+      method: "POST",
 
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Basic " + auth
+      },
+
+      body: JSON.stringify({
+        id: currentProject.id,
+        status
+      })
+    }
+  );
+
+
+  const data = await response.json();
 
     const data = await response.json();
 
