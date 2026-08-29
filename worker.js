@@ -227,74 +227,7 @@ export default {
 // مخصوص Website 2 APK Builder
 // ==========================================
 
-if (
-  url.pathname === "/api/app/projects" &&
-  request.method === "GET"
-) {
 
-  try {
-
-    const result =
-      await env.DB
-      .prepare(`
-
-        SELECT
-
-          id,
-          full_name,
-          phone,
-          brand,
-          project_type,
-          description,
-          budget,
-          start_time,
-          instagram,
-          website,
-          status,
-          created_at
-
-        FROM project_requests
-
-        ORDER BY id DESC
-
-      `)
-      .all();
-
-
-
-    return jsonResponse({
-
-      success:true,
-
-      projects:
-        result.results || []
-
-    });
-
-
-
-  } catch(error) {
-
-
-    console.error(
-      "APP_PROJECT_LIST_ERROR:",
-      error
-    );
-
-
-    return jsonResponse({
-
-      success:false,
-
-      message:
-        "خطا در دریافت اطلاعات"
-
-    },500);
-
-
-  }
-
-}
     // ==========================================
 // API: دریافت درخواست‌ها برای پنل مدیریت
 // ==========================================
