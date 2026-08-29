@@ -596,10 +596,7 @@ async function saveStatus() {
 
 
   const data = await response.json();
-
-    const data = await response.json();
-
-
+    
     if (!response.ok || !data.success) {
 
       throw new Error(
@@ -670,34 +667,17 @@ async function deleteProject() {
 
 try {
 
-  const auth = sessionStorage.getItem("adminAuth");
-
-  if (!auth) {
-    window.location.href = "/admin/login.html";
-    return;
-  }
-
   const response = await fetch(
-    "/api/projects/status",
+    `/api/projects?id=${encodeURIComponent(currentProject.id)}`,
     {
-      method: "POST",
-
+      method: "DELETE",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Basic " + auth
-      },
-
-      body: JSON.stringify({
-        id: currentProject.id,
-        status
-      })
+        "Authorization": "Basic " + sessionStorage.getItem("adminAuth")
+      }
     }
   );
 
-
   const data = await response.json();
-
-    const data = await response.json();
 
 
     if (!response.ok || !data.success) {
