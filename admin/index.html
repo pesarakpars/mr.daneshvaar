@@ -204,8 +204,14 @@
   <!-- Toast -->
 
   <div id="toast" class="toast"></div>
+  <script>
+  const auth = sessionStorage.getItem("adminAuth");
 
-
+  if (!auth) {
+    window.location.href = "/admin/login.html";
+  }
+</script>
+  
   <script src="./admin.js"></script>
 
 </body>
