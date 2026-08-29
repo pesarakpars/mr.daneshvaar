@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ورود مدیریت | MR.DANESHVAAR</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      background: #111;
+    }
+
+    .login-box {
+      width: 90%;
+      max-width: 380px;
+      background: #fff;
+      border-radius: 18px;
+      padding: 35px 25px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.4);
+    }
+
+    .logo {
+      width: 55px;
+      height: 55px;
+      margin: 0 auto 15px;
+      border-radius: 14px;
+      background: #111;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 0 0 8px;
+      font-size: 22px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #777;
+      font-size: 13px;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 16px;
+      border: 1px solid #ddd;
+      border-radius: 9px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #111;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      padding: 13px;
+      border-radius: 9px;
+      background: #111;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .6;
+    }
+
+    #message {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 12px;
+      color: #b00000;
+      min-height: 18px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-box">
+
+    <div class="logo">MR</div>
+
+    <h1>ورود به پنل مدیریت</h1>
+
+    <div class="subtitle">
+      MR.DANESHVAAR
+    </div>
+
+    <form id="loginForm">
+
+      <label for="username">
+        نام کاربری
+      </label>
+
+      <input
+        id="username"
+        type="text"
+        autocomplete="username"
+        required
+      >
+
+      <label for="password">
+        رمز عبور
+      </label>
+
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+        required
+      >
+
+      <button type="submit" id="loginButton">
+        ورود به پنل
+      </button>
+
+      <div id="message"></div>
+
+    </form>
+
+  </div>
+
+
+  <script>
+
+    const form =
+      document.getElementById("loginForm");
+
+    const username =
+      document.getElementById("username");
+
+    const password =
+      document.getElementById("password");
+
+    const button =
+      document.getElementById("loginButton");
+
+    const message =
+      document.getElementById("message");
+
+
+    form.addEventListener("submit", async event => {
+
+      event.preventDefault();
+
+      message.textContent = "";
+
+      button.disabled = true;
+
+      button.textContent = "در حال ورود...";
+
+
+      try {
+
+        const credentials =
+          btoa(
+            username.value.trim() +
+            ":" +
+            password.value
+          );
+
+
+        const response =
+          await fetch("/api/projects", {
+
+            method: "GET",
+
+            headers: {
+              "Authorization":
+                "Basic " + credentials,
+
+              "Accept":
+                "application/json"
+            }
+
+          });
+
+
+        if (response.status === 401) {
+
+          throw new Error(
+            "نام کاربری یا رمز عبور اشتباه است."
+          );
+
+        }
+
+
+        const data =
+          await response.json();
+
+
+        if (
+          !response.ok ||
+          !data.success
+        ) {
+
+          throw new Error(
+            "ورود انجام نشد."
+          );
+
+        }
+
+
+        sessionStorage.setItem(
+          "adminAuth",
+          credentials
+        );
+
+
+        window.location.href =
+          "/admin/";
+
+
+      } catch (error) {
+
+        message.textContent =
+          error.message ||
+          "خطا در ورود.";
+
+      } finally {
+
+        button.disabled = false;
+
+        button.textContent =
+          "ورود به پنل";
+
+      }
+
+    });
+
+  </script>
+
+</body>
+</html>
