@@ -5,6 +5,27 @@ export default {
 
 
     // ==========================================
+    // CORS / OPTIONS
+    // ==========================================
+
+    if (request.method === "OPTIONS") {
+
+      return new Response(null, {
+        status: 204,
+
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers":
+            "Content-Type, Authorization",
+          "Access-Control-Allow-Methods":
+            "GET, POST, DELETE, OPTIONS"
+        }
+      });
+
+    }
+
+
+    // ==========================================
     // ROUTES
     // ==========================================
 
@@ -59,56 +80,23 @@ export default {
     }
 
 
-
-    // ==========================================
-    // CORS
-    // ==========================================
-
-    if (request.method === "OPTIONS") {
-
-      return new Response(null, {
-
-        status: 204,
-
-        headers: {
-
-          "Access-Control-Allow-Origin":
-            "*",
-
-          "Access-Control-Allow-Headers":
-            "Content-Type",
-
-          "Access-Control-Allow-Methods":
-            "GET, POST, DELETE, OPTIONS"
-
-        }
-
-      });
-
-    }
-
-
-
     // ==========================================
     // PUBLIC PROJECT FORM
+    // POST /api/projects
     // ==========================================
-
 
     if (
       url.pathname === "/api/projects" &&
       request.method === "POST"
     ) {
 
-
       try {
-
 
         const data =
           await request.json();
 
 
         const {
-
           full_name,
           phone,
           brand,
@@ -118,9 +106,7 @@ export default {
           start_time,
           instagram,
           website
-
         } = data;
-
 
 
         if (
@@ -129,77 +115,61 @@ export default {
           !description
         ) {
 
-
-          return jsonResponse({
-
-            success:false,
-
-            message:
-              "اطلاعات ضروری کامل نیست."
-
-          },400);
-
+          return jsonResponse(
+            {
+              success: false,
+              message:
+                "اطلاعات ضروری کامل نیست."
+            },
+            400
+          );
 
         }
 
 
-
         const result =
           await env.DB
-          .prepare(`
-
-            INSERT INTO project_requests
-
-            (
-              full_name,
-              phone,
-              brand,
-              project_type,
-              description,
-              budget,
-              start_time,
-              instagram,
-              website
+            .prepare(`
+              INSERT INTO project_requests
+              (
+                full_name,
+                phone,
+                brand,
+                project_type,
+                description,
+                budget,
+                start_time,
+                instagram,
+                website
+              )
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `)
+            .bind(
+              full_name.trim(),
+              phone.trim(),
+              brand?.trim() || null,
+              project_type || null,
+              description.trim(),
+              budget || null,
+              start_time || null,
+              instagram?.trim() || null,
+              website?.trim() || null
             )
-
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-
-          `)
-
-          .bind(
-
-            full_name.trim(),
-            phone.trim(),
-            brand?.trim() || null,
-            project_type || null,
-            description.trim(),
-            budget || null,
-            start_time || null,
-            instagram?.trim() || null,
-            website?.trim() || null
-
-          )
-
-          .run();
-
+            .run();
 
 
         return jsonResponse({
-
-          success:true,
+          success: true,
 
           message:
             "درخواست پروژه با موفقیت ثبت شد.",
 
           id:
             result.meta?.last_row_id || null
-
         });
 
 
-
-      } catch(error) {
-
+      } catch (error) {
 
         console.error(
           "PROJECT_FORM_ERROR:",
@@ -207,310 +177,253 @@ export default {
         );
 
 
-        return jsonResponse({
-
-          success:false,
-
-          message:
-            "ثبت درخواست انجام نشد."
-
-        },500);
-
+        return jsonResponse(
+          {
+            success: false,
+            message:
+              "ثبت درخواست انجام نشد."
+          },
+          500
+        );
 
       }
 
-
     }
-    // ==========================================
-// API: APP PROJECT LIST
-// بدون نیاز به ورود
-// مخصوص Website 2 APK Builder
-// ==========================================
 
 
     // ==========================================
-// API: دریافت درخواست‌ها برای پنل مدیریت
-// ==========================================
-
-if (
-  url.pathname === "/api/projects" &&
-  request.method === "GET"
-) {
-
-  try {
-
-    const result =
-      await env.DB
-      .prepare(`
-
-        SELECT
-
-          id,
-          full_name,
-          phone,
-          brand,
-          project_type,
-          description,
-          budget,
-          start_time,
-          instagram,
-          website,
-          status,
-          created_at
-
-        FROM project_requests
-
-        ORDER BY id DESC
-
-      `)
-      .all();
-
-
-    return jsonResponse({
-
-      success:true,
-
-      projects:
-        result.results || []
-
-    });
-
-
-  } catch(error) {
-
-
-    console.error(
-      "PROJECT_LIST_ERROR:",
-      error
-    );
-
-
-    return jsonResponse({
-
-      success:false,
-
-      message:
-        "دریافت درخواست‌ها انجام نشد."
-
-    },500);
-
-
-  }
-
-}
-
-
-
-// ==========================================
-// تغییر وضعیت پروژه
-// ==========================================
-
-if (
-  url.pathname === "/api/projects/status" &&
-  request.method === "POST"
-) {
-
-  try {
-
-
-    const data =
-      await request.json();
-
-
-    const {
-      id,
-      status
-    } = data;
-
-
-
-    const allowedStatuses = [
-
-      "new",
-      "reviewing",
-      "completed"
-
-    ];
-
-
+    // API: دریافت درخواست‌ها
+    // GET /api/projects
+    // فقط برای Admin
+    // ==========================================
 
     if (
-      !id ||
-      !allowedStatuses.includes(status)
+      url.pathname === "/api/projects" &&
+      request.method === "GET"
     ) {
 
-      return jsonResponse({
+      try {
 
-        success:false,
-
-        message:
-          "اطلاعات وضعیت نامعتبر است."
-
-      },400);
-
-    }
-
-
-
-    await env.DB
-    .prepare(`
-
-      UPDATE project_requests
-
-      SET status = ?
-
-      WHERE id = ?
-
-    `)
-
-    .bind(
-      status,
-      id
-    )
-
-    .run();
+        const result =
+          await env.DB
+            .prepare(`
+              SELECT
+                id,
+                full_name,
+                phone,
+                brand,
+                project_type,
+                description,
+                budget,
+                start_time,
+                instagram,
+                website,
+                status,
+                created_at
+              FROM project_requests
+              ORDER BY id DESC
+            `)
+            .all();
 
 
+        return jsonResponse({
+          success: true,
 
-    return jsonResponse({
-
-      success:true,
-
-      message:
-        "وضعیت درخواست تغییر کرد."
-
-    });
+          projects:
+            result.results || []
+        });
 
 
+      } catch (error) {
 
-  } catch(error) {
-
-
-    console.error(
-      "PROJECT_STATUS_ERROR:",
-      error
-    );
+        console.error(
+          "PROJECT_LIST_ERROR:",
+          error
+        );
 
 
-    return jsonResponse({
+        return jsonResponse(
+          {
+            success: false,
+            message:
+              "دریافت درخواست‌ها انجام نشد."
+          },
+          500
+        );
 
-      success:false,
-
-      message:
-        "تغییر وضعیت انجام نشد."
-
-    },500);
-
-
-  }
-
-}
-
-
-
-
-
-// ==========================================
-// حذف درخواست
-// ==========================================
-
-if (
-  url.pathname === "/api/projects" &&
-  request.method === "DELETE"
-) {
-
-
-  try {
-
-
-    const id =
-      url.searchParams.get("id");
-
-
-
-    if(!id){
-
-      return jsonResponse({
-
-        success:false,
-
-        message:
-          "شناسه درخواست مشخص نشده است."
-
-      },400);
+      }
 
     }
 
 
+    // ==========================================
+    // تغییر وضعیت پروژه
+    // POST /api/projects/status
+    // فقط برای Admin
+    // ==========================================
 
-    const result =
-      await env.DB
-      .prepare(`
+    if (
+      url.pathname === "/api/projects/status" &&
+      request.method === "POST"
+    ) {
 
-        DELETE FROM project_requests
+      try {
 
-        WHERE id = ?
-
-      `)
-
-      .bind(id)
-
-      .run();
-
-
-
-    return jsonResponse({
-
-      success:true,
-
-      message:
-        "درخواست حذف شد."
-
-    });
+        const data =
+          await request.json();
 
 
-
-  } catch(error) {
-
-
-    console.error(
-      "PROJECT_DELETE_ERROR:",
-      error
-    );
+        const {
+          id,
+          status
+        } = data;
 
 
-    return jsonResponse({
+        const allowedStatuses = [
+          "new",
+          "reviewing",
+          "completed"
+        ];
 
-      success:false,
 
-      message:
-        "حذف انجام نشد."
+        if (
+          !id ||
+          !allowedStatuses.includes(status)
+        ) {
 
-    },500);
+          return jsonResponse(
+            {
+              success: false,
+              message:
+                "اطلاعات وضعیت نامعتبر است."
+            },
+            400
+          );
 
+        }
+
+
+        await env.DB
+          .prepare(`
+            UPDATE project_requests
+            SET status = ?
+            WHERE id = ?
+          `)
+          .bind(
+            status,
+            id
+          )
+          .run();
+
+
+        return jsonResponse({
+          success: true,
+
+          message:
+            "وضعیت درخواست تغییر کرد."
+        });
+
+
+      } catch (error) {
+
+        console.error(
+          "PROJECT_STATUS_ERROR:",
+          error
+        );
+
+
+        return jsonResponse(
+          {
+            success: false,
+            message:
+              "تغییر وضعیت انجام نشد."
+          },
+          500
+        );
+
+      }
+
+    }
+
+
+    // ==========================================
+    // حذف درخواست
+    // DELETE /api/projects?id=...
+    // فقط برای Admin
+    // ==========================================
+
+    if (
+      url.pathname === "/api/projects" &&
+      request.method === "DELETE"
+    ) {
+
+      try {
+
+        const id =
+          url.searchParams.get("id");
+
+
+        if (!id) {
+
+          return jsonResponse(
+            {
+              success: false,
+              message:
+                "شناسه درخواست مشخص نشده است."
+            },
+            400
+          );
+
+        }
+
+
+        await env.DB
+          .prepare(`
+            DELETE FROM project_requests
+            WHERE id = ?
+          `)
+          .bind(id)
+          .run();
+
+
+        return jsonResponse({
+          success: true,
+
+          message:
+            "درخواست حذف شد."
+        });
+
+
+      } catch (error) {
+
+        console.error(
+          "PROJECT_DELETE_ERROR:",
+          error
+        );
+
+
+        return jsonResponse(
+          {
+            success: false,
+            message:
+              "حذف انجام نشد."
+          },
+          500
+        );
+
+      }
+
+    }
+
+
+    // ==========================================
+    // فایل‌های سایت
+    // ==========================================
+
+    return env.ASSETS.fetch(request);
 
   }
-
-
-}
-
-
-
-
-
-// ==========================================
-// فایل‌های سایت
-// ==========================================
-
-return env.ASSETS.fetch(request);
-
-
-}
-
-
-
-
-
+};
 
 
 // ==========================================
@@ -522,176 +435,153 @@ async function authenticateAdmin(
   env
 ) {
 
-
-const authorization =
-  request.headers.get("Authorization");
-
+  const authorization =
+    request.headers.get("Authorization");
 
 
-if(!authorization){
+  if (!authorization) {
 
-return {
-authorized:false
-};
+    return {
+      authorized: false
+    };
 
-}
-
-
-
-if(
- !authorization.startsWith("Basic ")
-){
-
-return {
-authorized:false
-};
-
-}
+  }
 
 
+  if (
+    !authorization.startsWith("Basic ")
+  ) {
 
-try{
+    return {
+      authorized: false
+    };
 
-
-const encoded =
-authorization.slice(6).trim();
-
-
-
-const decoded =
-atob(encoded);
+  }
 
 
+  try {
 
-const separator =
-decoded.indexOf(":");
-
-
-
-if(separator === -1){
-
-return {
-authorized:false
-};
-
-}
+    const encoded =
+      authorization
+        .slice(6)
+        .trim();
 
 
-
-const username =
-decoded.slice(0,separator);
-
+    const decoded =
+      atob(encoded);
 
 
-const password =
-decoded.slice(separator+1);
+    const separator =
+      decoded.indexOf(":");
 
 
+    if (separator === -1) {
 
-const usernameMatch =
-timingSafeEqual(
-username,
-env.ADMIN_USERNAME
-);
+      return {
+        authorized: false
+      };
 
-
-
-const passwordMatch =
-timingSafeEqual(
-password,
-env.ADMIN_PASSWORD
-);
+    }
 
 
-
-return {
-
-authorized:
-usernameMatch &&
-passwordMatch
-
-};
+    const username =
+      decoded.slice(
+        0,
+        separator
+      );
 
 
+    const password =
+      decoded.slice(
+        separator + 1
+      );
 
-}catch(error){
+
+    const usernameMatch =
+      timingSafeEqual(
+        username,
+        env.ADMIN_USERNAME
+      );
 
 
-return {
+    const passwordMatch =
+      timingSafeEqual(
+        password,
+        env.ADMIN_PASSWORD
+      );
 
-authorized:false
 
-};
+    return {
+      authorized:
+        usernameMatch &&
+        passwordMatch
+    };
 
+
+  } catch (error) {
+
+    console.error(
+      "ADMIN_AUTH_ERROR:",
+      error
+    );
+
+
+    return {
+      authorized: false
+    };
+
+  }
 
 }
-
-
-}
-
-
-
-
-
 
 
 // ==========================================
 // SAFE COMPARE
 // ==========================================
 
-function timingSafeEqual(a,b){
+function timingSafeEqual(
+  a,
+  b
+) {
+
+  if (
+    typeof a !== "string" ||
+    typeof b !== "string"
+  ) {
+
+    return false;
+
+  }
 
 
-if(
-typeof a !== "string" ||
-typeof b !== "string"
-){
+  if (
+    a.length !== b.length
+  ) {
 
-return false;
+    return false;
 
-}
-
+  }
 
 
-if(
-a.length !== b.length
-){
-
-return false;
-
-}
+  let result = 0;
 
 
+  for (
+    let i = 0;
+    i < a.length;
+    i++
+  ) {
 
-let result = 0;
+    result |=
+      a.charCodeAt(i) ^
+      b.charCodeAt(i);
 
-
-
-for(
-let i=0;
-i<a.length;
-i++
-){
-
-result |=
-a.charCodeAt(i)
-^
-b.charCodeAt(i);
-
-}
+  }
 
 
-
-return result === 0;
-
+  return result === 0;
 
 }
-
-
-
-
-
-
 
 
 // ==========================================
@@ -699,40 +589,32 @@ return result === 0;
 // ==========================================
 
 function jsonResponse(
-data,
-status=200
-){
+  data,
+  status = 200
+) {
 
-return new Response(
+  return new Response(
+    JSON.stringify(data),
+    {
+      status,
 
-JSON.stringify(data),
+      headers: {
+        "Content-Type":
+          "application/json; charset=UTF-8",
 
-{
+        "Access-Control-Allow-Origin":
+          "*",
 
-status,
+        "Access-Control-Allow-Headers":
+          "Content-Type, Authorization",
 
-headers:{
+        "Access-Control-Allow-Methods":
+          "GET, POST, DELETE, OPTIONS",
 
-"Content-Type":
-"application/json; charset=UTF-8",
-
-"Access-Control-Allow-Origin":
-"*",
-
-"Access-Control-Allow-Headers":
-"Content-Type",
-
-"Access-Control-Allow-Methods":
-"GET, POST, DELETE, OPTIONS",
-
-"Cache-Control":
-"no-store"
-
-}
-
-}
-
-);
-
+        "Cache-Control":
+          "no-store"
+      }
+    }
+  );
 
 }
