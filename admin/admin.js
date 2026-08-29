@@ -108,13 +108,20 @@ async function loadProjects() {
 
   try {
 
-    const response = await fetch("/api/projects", {
-      method: "GET",
-      headers: {
-        "Accept": "application/json"
-      }
-    });
+  const auth = sessionStorage.getItem("adminAuth");
 
+if (!auth) {
+  window.location.href = "/admin/login.html";
+  return;
+}
+
+const response = await fetch("/api/projects", {
+  method: "GET",
+  headers: {
+    "Accept": "application/json",
+    "Authorization": "Basic " + auth
+  }
+});
 
     const data = await response.json();
 
