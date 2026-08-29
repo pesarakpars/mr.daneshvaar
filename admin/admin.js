@@ -668,15 +668,25 @@ async function deleteProject() {
   }
 
 
-  try {
+ try {
 
-    const response = await fetch(
-      `/api/projects?id=${encodeURIComponent(currentProject.id)}`,
-      {
-        method: "DELETE"
+  const auth = sessionStorage.getItem("adminAuth");
+
+  if (!auth) {
+    window.location.href = "/admin/login.html";
+    return;
+  }
+
+  const response = await fetch(
+    `/api/projects?id=${encodeURIComponent(currentProject.id)}`,
+    {
+      method: "DELETE",
+
+      headers: {
+        "Authorization": "Basic " + auth
       }
-    );
-
+    }
+  );
 
     const data = await response.json();
 
